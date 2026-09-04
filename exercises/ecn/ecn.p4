@@ -28,7 +28,8 @@ header ethernet_t {
 header ipv4_t {
     bit<4>    version;
     bit<4>    ihl;
-    bit<8>    tos;
+    bit<6>    tos;
+    bit<2>    ecn;
     bit<16>   totalLen;
     bit<16>   identification;
     bit<3>    flags;
@@ -136,6 +137,13 @@ control MyEgress(inout headers hdr,
          *   - compare standard_metadata.enq_qdepth with threshold
          *     and set hdr.ipv4.ecn to 3 if larger
          */
+        if (hdr.ipv4.ecn != 1 && hdr.ipv4.ecn != 2) {
+            return;
+        }
+        if (standard_metadata.enq_qdepth <= ECN_THRESHOLD) {
+            return;
+        }
+        hdr.ipv4.ecn = 3;
     }
 }
 
