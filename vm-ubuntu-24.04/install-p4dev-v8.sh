@@ -480,8 +480,8 @@ pip3 -V || echo "No such command in PATH: pip3"
 # my own convenience):
 if [ "${ID}" = "ubuntu" ]
 then
-    sudo apt-get --yes update
-    sudo apt-get --yes install git vim
+    apt-get --yes update
+    apt-get --yes install git vim
 elif [ "${ID}" = "fedora" ]
 then
     sudo dnf -y update
@@ -498,7 +498,7 @@ fi
 TIME_AUTOTOOLS_START=$(date +%s)
 if [ "${ID}" = "ubuntu" ]
 then
-    sudo apt-get --yes install \
+    apt-get --yes install \
 	 autoconf automake libtool curl make g++ unzip \
 	 pkg-config python3-pip python3-venv
 elif [ "${ID}" = "fedora" ]
@@ -542,8 +542,8 @@ then
 
     if [ "${ID}" = "ubuntu" ]
     then
-	sudo apt-get purge -y autoconf automake
-	sudo apt-get install --yes libtool-bin
+	apt-get purge -y autoconf automake
+	apt-get install --yes libtool-bin
     elif [ "${ID}" = "fedora" ]
     then
 	sudo dnf remove -y autoconf automake
@@ -594,7 +594,7 @@ then
     TIME_GRPC_CLONE_START=$(date +%s)
     TIME_GRPC_CLONE_END=$(date +%s)
     TIME_GRPC_INSTALL_START=$(date +%s)
-    sudo apt-get --yes install libprotobuf-dev protobuf-compiler protobuf-compiler-grpc libgrpc-dev libgrpc++-dev
+    apt-get --yes install libprotobuf-dev protobuf-compiler protobuf-compiler-grpc libgrpc-dev libgrpc++-dev
     if [ "${PROTOBUF_VERSION_FOR_PIP}" != "" ]
     then
 	pip3 install protobuf==${PROTOBUF_VERSION_FOR_PIP}
@@ -616,7 +616,7 @@ else
 
     if [ "${ID}" = "ubuntu" ]
     then
-	sudo apt-get --yes install cmake
+	apt-get --yes install cmake
     elif [ "${ID}" = "fedora" ]
     then
 	sudo dnf -y install cmake
@@ -625,12 +625,12 @@ else
     # From BUILDING.md of grpc source repository
     if [ "${ID}" = "ubuntu" ]
     then
-	sudo apt-get --yes install build-essential autoconf libtool pkg-config
+	apt-get --yes install build-essential autoconf libtool pkg-config
 	# TODO: This package is not mentioned in grpc BUILDING.md
 	# instructions, but when I tried on Ubuntu 20.04 without it, the
 	# building of grpc failed with not being able to find an OpenSSL
 	# library.
-	sudo apt-get --yes install libssl-dev
+	apt-get --yes install libssl-dev
     elif [ "${ID}" = "fedora" ]
     then
 	# I am not sure that the 'Development Tools' group on Fedora is
@@ -739,7 +739,7 @@ TIME_PI_INSTALL_START=$(date +%s)
 # Deps needed to build PI:
 if [ "${ID}" = "ubuntu" ]
 then
-    sudo apt-get --yes install libreadline-dev valgrind libtool-bin libboost-dev libboost-system-dev libboost-thread-dev
+    apt-get --yes install libreadline-dev valgrind libtool-bin libboost-dev libboost-system-dev libboost-thread-dev
 elif [ "${ID}" = "fedora" ]
 then
     # Any other libraries output from 'dnf search libtool' that need
@@ -911,7 +911,7 @@ then
     # Install Ubuntu dependencies needed by p4c, from its README.md.
     # It may not match the latest p4c README.md suggested list of
     # packages as of today, but it is tested every month.
-    sudo apt-get --yes install g++ git automake libtool libgc-dev \
+    apt-get --yes install g++ git automake libtool libgc-dev \
          bison flex libfl-dev libgmp-dev \
          libboost-dev libboost-iostreams-dev libboost-graph-dev \
          llvm pkg-config python3-pip tcpdump libelf-dev clang
@@ -1074,7 +1074,7 @@ date
 # Things needed for `cd tutorials/exercises/basic ; make run` to work:
 if [ "${ID}" = "ubuntu" ]
 then
-    sudo apt-get --yes install libgflags-dev net-tools
+    apt-get --yes install libgflags-dev net-tools
 elif [ "${ID}" = "fedora" ]
 then
     sudo dnf -y install gflags-devel net-tools

@@ -70,6 +70,19 @@ parser MyParser(packet_in packet,
          *   2) If hdr.ethernet.etherType == TYPE_IPV4 -> parse IPv4
          *   3) Otherwise -> transition accept
          */
+        transition parse_ethernet;
+    }
+
+    state parse_ethernet {
+        packet.extract(hdr.ethernet);
+        transition select(hdr.ethernet.etherType) {
+            TYPE_IPV4: parse_ipv4;
+            default: accept;
+        }
+    }
+
+    state parse_ipv4 {
+        packet.extract(hdr.ipv4);
         transition accept;
     }
 }
@@ -104,7 +117,7 @@ control MyIngress(inout headers hdr,
      * NOTE FOR NEW READERS:
      * 'ipv4_forward(dstAddr, port)' is invoked by table 'ipv4_lpm'.
      *
-     * The values for 'dstAddr' and 'port' are *action data* supplied by
+     * The values for 'dstAddr' and 'port' are action data supplied by
      * the control plane when it installs entries in 'ipv4_lpm'.
      *
      * They mean:
@@ -126,6 +139,9 @@ control MyIngress(inout headers hdr,
               - (optionally) set hdr.ethernet.srcAddr to the switch MAC for 'port'
               - adjust IPv4 TTL and checksums as needed
         */
+        standard_metadata.egress_spec = port;
+        hdr.ethernet.dstAddr = dstAddr;
+        hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
     }
 
     /*********************************************************************
@@ -148,11 +164,14 @@ control MyIngress(inout headers hdr,
     }
 
     apply {
-        /* TODO: fix ingress control logic
+        /* TODO: sfix ingress control logic
          *  - Good practice: apply ipv4_lpm only when the IPv4 header is valid, e.g.:
          *      if (hdr.ipv4.isValid()) { ipv4_lpm.apply(); }
          *    This skeleton currently applies unconditionally for the exercise.
          */
+        if (!hdr.ipv4.isValid()) {
+            return;
+        }
         ipv4_lpm.apply();
     }
 }
@@ -207,6 +226,8 @@ control MyDeparser(packet_out packet, in headers hdr) {
             packet.emit(hdr.ipv4);   // per P4_16 spec, emit appends a header
                                      // only if it is valid; no 'if' needed.
         */
+        packet.emit(hdr.ethernet);
+        packet.emit(hdr.ipv4);
     }
 }
 
